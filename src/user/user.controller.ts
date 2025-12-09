@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   UsePipes,
   ValidationPipe,
@@ -16,5 +17,10 @@ export class UserController {
   @UsePipes(ValidationPipe)
   public createUser(@Body() dto: CreateUserDto) {
     return this.userService.createUser(dto);
+  }
+
+  @Get()
+  public getUsers() {
+    return this.userService.getUsers();
   }
 }

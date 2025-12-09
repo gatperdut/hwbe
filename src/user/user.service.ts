@@ -1,16 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from 'src/generated/prisma/client';
-import { prisma } from 'src/prisma/prisma-singleton';
+import { Prisma } from 'prisma/generated/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor() {}
-
-  public createUser(data: Prisma.UserCreateInput) {
-    return prisma.user.create({ data: data });
+  constructor(private prismaService: PrismaService) {
+    // Empty
   }
 
-  getUsers() {}
+  public createUser(data: Prisma.UserCreateInput) {
+    return this.prismaService.user.create({ data: data });
+  }
 
-  getUserById() {}
+  public getUsers() {
+    return this.prismaService.user.findMany();
+  }
+
+  public getUserById() {
+    // Empty
+  }
 }

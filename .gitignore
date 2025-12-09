@@ -11,7 +11,7 @@ npm-debug.log*
 # OS
 .DS_Store
 
-# IDE - VSCode
+# VSCode
 .vscode/*
 
 # dotenv environment variable files
