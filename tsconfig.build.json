@@ -1,4 +1,14 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["node_modules", "dist"]
+  "rootDir": "src",
+  "include": ["src/**/*.ts"],
+  "incremental": true,
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "dist",
+    "declaration": true,
+    "removeComments": true,
+    "sourceMap": true
+  },
+  "exclude": ["dist", "prisma"]
 }
