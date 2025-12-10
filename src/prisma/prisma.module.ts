@@ -3,9 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from './prisma.service';
 
 @Module({
+  controllers: [],
   providers: [PrismaService],
-  exports: [PrismaService],
   imports: [ConfigModule],
+  exports: [PrismaService],
 })
 export class PrismaModule {
   // Empty

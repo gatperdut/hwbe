@@ -13,5 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
     "resolveJsonModule": true
-  }
+  },
+  "exclude": ["dist"]
 }

@@ -9,6 +9,5 @@
     "declaration": true,
     "removeComments": true,
     "sourceMap": true
-  },
-  "exclude": ["dist", "prisma"]
+  }
 }
