@@ -48,10 +48,9 @@ export class AuthService {
     return { token: token };
   }
 
-  // TODO return type will probably always be jwt.JwtPayload?
-  public validateToken(token: string): jwt.JwtPayload | string {
+  public validateToken(token: string): User {
     try {
-      return jwt.verify(token, this.jwtSecret);
+      return jwt.verify(token, this.jwtSecret) as User;
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }

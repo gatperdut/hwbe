@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
   controllers: [AuthController],
   providers: [AuthService],
   imports: [ConfigModule, PrismaModule, UserModule],
+  exports: [AuthService],
 })
 export class AuthModule {
   // Empty
