@@ -1,15 +1,20 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { User } from 'src/generated/client';
+import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
+import { AuthTokenPayload } from './types/auth-token-payload.type';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {
     // Empty
   }
 
-  use(req: Request, res: Response, next: NextFunction) {
+  public async use(req: Request, res: Response, next: NextFunction): Promise<void> {
     if (req.method === 'OPTIONS') {
       return next();
     }
@@ -26,9 +31,9 @@ export class AuthMiddleware implements NestMiddleware {
       throw new UnauthorizedException('Token is missing');
     }
 
-    const payload: User = this.authService.validateToken(token);
+    const authTokenPayload: AuthTokenPayload = this.authService.verifyToken(token);
 
-    req.user = payload;
+    req.user = (await this.userService.byId(authTokenPayload.userId)) as User;
 
     next();
   }

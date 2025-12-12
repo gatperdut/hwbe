@@ -5,7 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 
 @Module({
-  // TODO {isGlobal:true}
+  // TODO {isGlobal:true} for ConfigModule
   imports: [ConfigModule.forRoot(), UserModule, AuthModule],
   controllers: [],
   providers: [],
@@ -17,6 +17,8 @@ export class AppModule {
       .exclude(
         { path: 'auth/login', method: RequestMethod.POST },
         { path: 'auth/register', method: RequestMethod.POST },
+        { path: 'auth/verify-token', method: RequestMethod.POST },
+        // TODO add the rest
       )
       .forRoutes('*');
   }

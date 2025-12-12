@@ -1,6 +1,6 @@
 import { User } from 'src/generated/client';
 
-declare module 'express-serve-static-core' {
+declare module 'express' {
   interface Request {
     user?: User;
   }

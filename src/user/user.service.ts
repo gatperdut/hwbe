@@ -12,11 +12,11 @@ export class UserService {
     return this.prismaService.user.create({ data: data });
   }
 
-  public getAll() {
-    return this.prismaService.user.findMany();
+  public byId(id: number) {
+    return this.prismaService.user.findUnique({ where: { id: id } });
   }
 
-  public getByEmail(email: string) {
+  public byEmail(email: string) {
     return this.prismaService.user.findUnique({
       where: { email: email },
     });

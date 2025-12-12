@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { User } from 'src/generated/client';
 import { UserService } from 'src/user/user.service';
+import { AuthTokenPayload } from './types/auth-token-payload.type';
 import { AuthToken } from './types/auth-token.type';
 
 // TODO use jwtService (@nestjs/jwt) instead of jsonwebtoken directly
@@ -21,7 +22,15 @@ export class AuthService {
   }
 
   public generateToken(userId: number): string {
-    return jwt.sign({ userId }, this.jwtSecret, { expiresIn: '1h' });
+    return jwt.sign(
+      {
+        userId: userId,
+      },
+      this.jwtSecret,
+      {
+        expiresIn: '12h',
+      },
+    );
   }
 
   public async register(displayName: string, email: string, password: string): Promise<AuthToken> {
@@ -35,11 +44,11 @@ export class AuthService {
 
     const token: string = this.generateToken(user.id);
 
-    return { token: token }; // TODO could return just the string?
+    return { token: token };
   }
 
   public async login(email: string, password: string): Promise<AuthToken> {
-    const user = await this.userService.getByEmail(email);
+    const user = await this.userService.byEmail(email);
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
@@ -50,9 +59,9 @@ export class AuthService {
     return { token: token };
   }
 
-  public validateToken(token: string): User {
+  public verifyToken(token: string): AuthTokenPayload {
     try {
-      return jwt.verify(token, this.jwtSecret) as User;
+      return jwt.verify(token, this.jwtSecret) as AuthTokenPayload;
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }

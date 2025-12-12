@@ -1,12 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
+import { User } from 'src/generated/client';
+import { UserCurrent } from './user-current.decorator';
 import { UserService } from './user.service';
 
 @Controller('users')
-export class UserController {
+export class UsersController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  public getUsers() {
-    return this.userService.getAll();
+  @Get('me')
+  public me(@UserCurrent() user: User) {
+    return user;
   }
 }
