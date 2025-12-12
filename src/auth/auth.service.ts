@@ -5,6 +5,7 @@ import { User } from 'src/generated/client';
 import { UserService } from 'src/user/user.service';
 import { AuthToken } from './types/auth-token.type';
 
+// TODO use jwtService (@nestjs/jwt) instead of jsonwebtoken directly
 @Injectable()
 export class AuthService {
   private readonly jwtSecret: string = 'supersecretkey'; // TODO .env
@@ -43,6 +44,7 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
     const token: string = this.generateToken(user.id);
 
     return { token: token };
