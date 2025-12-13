@@ -1,4 +1,12 @@
-import { User } from 'src/generated/client';
+import { IsDefined, IsEmail, IsNotEmpty } from 'class-validator';
 
-// TODO This should be a class, so it can be validated with class-validator?
-export type AuthLoginDto = Pick<User, 'email' | 'password'>;
+export class AuthLoginDto {
+  @IsEmail()
+  @IsDefined()
+  @IsNotEmpty()
+  email!: string;
+
+  @IsDefined()
+  @IsNotEmpty()
+  password!: string;
+}
