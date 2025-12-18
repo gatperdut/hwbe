@@ -21,4 +21,10 @@ export class UserService {
       where: { email: email },
     });
   }
+
+  public byDisplayName(displayName: string) {
+    return this.prismaService.user.findUnique({
+      where: { displayName: displayName },
+    });
+  }
 }

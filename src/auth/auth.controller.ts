@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthLoginDto } from './dto/auth-login-dto.type';
-import { AuthRegisterDto } from './dto/auth-register-dto.type';
+import { AuthLoginDtoIn } from './dto/auth-login-dto-in.type';
+import { AuthRegisterDtoIn } from './dto/auth-register-dto-in.type';
 import { AuthTokenPayload } from './types/auth-token-payload.type';
 import { AuthToken } from './types/auth-token.type';
 
@@ -13,12 +13,12 @@ export class AuthController {
 
   // TODO need to be async?
   @Post('register')
-  public async register(@Body() body: AuthRegisterDto) {
+  public async register(@Body() body: AuthRegisterDtoIn) {
     return this.authService.register(body.displayName, body.email, body.password);
   }
 
   @Post('login')
-  public async login(@Body() body: AuthLoginDto) {
+  public async login(@Body() body: AuthLoginDtoIn) {
     return this.authService.login(body.email, body.password);
   }
 

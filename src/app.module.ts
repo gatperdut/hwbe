@@ -15,10 +15,13 @@ export class AppModule {
     consumer
       .apply(AuthMiddleware)
       .exclude(
+        // Auth
         { path: 'auth/login', method: RequestMethod.POST },
         { path: 'auth/register', method: RequestMethod.POST },
         { path: 'auth/verify-token', method: RequestMethod.POST },
-        // TODO add the rest
+        // User
+        { path: 'users/available-email', method: RequestMethod.GET },
+        { path: 'users/available-display-name', method: RequestMethod.GET },
       )
       .forRoutes('*');
   }
