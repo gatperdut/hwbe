@@ -1,12 +1,28 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AuthMiddleware } from './auth/auth.middleware';
+import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UserModule],
+  // TODO {isGlobal:true} for ConfigModule
+  imports: [ConfigModule.forRoot(), UserModule, AuthModule],
   controllers: [],
   providers: [],
 })
 export class AppModule {
-  // Empty
+  public configure(consumer: MiddlewareConsumer): void {
+    consumer
+      .apply(AuthMiddleware)
+      .exclude(
+        // Auth
+        { path: 'auth/login', method: RequestMethod.POST },
+        { path: 'auth/register', method: RequestMethod.POST },
+        { path: 'auth/verify-token', method: RequestMethod.POST },
+        // User
+        { path: 'users/available-email', method: RequestMethod.GET },
+        { path: 'users/available-display-name', method: RequestMethod.GET },
+      )
+      .forRoutes('*');
+  }
 }

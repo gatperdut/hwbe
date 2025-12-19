@@ -8,15 +8,23 @@ export class UserService {
     // Empty
   }
 
-  public createUser(data: Prisma.UserCreateInput) {
+  public create(data: Prisma.UserCreateInput) {
     return this.prismaService.user.create({ data: data });
   }
 
-  public getUsers() {
-    return this.prismaService.user.findMany();
+  public byId(id: number) {
+    return this.prismaService.user.findUnique({ where: { id: id } });
   }
 
-  public getUserById() {
-    // Empty
+  public byEmail(email: string) {
+    return this.prismaService.user.findUnique({
+      where: { email: email },
+    });
+  }
+
+  public byDisplayName(displayName: string) {
+    return this.prismaService.user.findUnique({
+      where: { displayName: displayName },
+    });
   }
 }
