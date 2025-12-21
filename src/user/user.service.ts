@@ -1,11 +1,36 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { Prisma } from 'src/generated/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PaginationInDto } from 'src/utils/pagination-in.dto';
+import { UserDtoOut } from './dto/user-dto-out.type';
 
 @Injectable()
 export class UserService {
   constructor(private prismaService: PrismaService) {
     // Empty
+  }
+
+  public async all(paginationIn: PaginationInDto) {
+    const total: number = await this.prismaService.user.count();
+
+    return {
+      items: plainToInstance(
+        UserDtoOut,
+        await this.prismaService.user.findMany({
+          skip: paginationIn.page * paginationIn.pageSize,
+          take: paginationIn.pageSize,
+          orderBy: { displayName: 'asc' },
+        }),
+        { excludeExtraneousValues: true },
+      ),
+      meta: {
+        page: paginationIn.page,
+        pageSize: paginationIn.pageSize,
+        total: total,
+        pages: Math.ceil(total / paginationIn.pageSize),
+      },
+    };
   }
 
   public create(data: Prisma.UserCreateInput) {

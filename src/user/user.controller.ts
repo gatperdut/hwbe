@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { User } from 'src/generated/client';
+import { PaginationInDto } from 'src/utils/pagination-in.dto';
 import { UserAvailabilityDisplayNameDtoIn } from './dto/user-availability-display-name-dto-in.type';
 import { UserAvailabilityDtoOut } from './dto/user-availability-dto-out.type';
 import { UserAvailabilityEmailDtoIn } from './dto/user-availability-email-dto-in.type';
@@ -12,6 +13,11 @@ import { UserService } from './user.service';
 export class UsersController {
   constructor(private readonly userService: UserService) {
     // Empty
+  }
+
+  @Get()
+  public all(@Query() paginationIn: PaginationInDto) {
+    return this.userService.all(paginationIn);
   }
 
   @Get('me')
