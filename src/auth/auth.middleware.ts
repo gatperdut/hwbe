@@ -28,7 +28,7 @@ export class AuthMiddleware implements NestMiddleware {
     const token: string = authHeader.split(' ')[1];
 
     if (!token) {
-      throw new UnauthorizedException('Token is missing');
+      throw new UnauthorizedException('Authorization token is missing');
     }
 
     const authTokenPayload: AuthTokenPayload = this.authService.verifyToken(token);
