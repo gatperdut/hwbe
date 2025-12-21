@@ -13,5 +13,5 @@ export class PaginationInDto {
   @IsInt()
   @Min(1)
   @Max(100)
-  pageSize = 20;
+  pageSize = 10;
 }

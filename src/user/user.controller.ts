@@ -2,10 +2,11 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { User } from 'src/generated/client';
 import { PaginationInDto } from 'src/utils/pagination-in.dto';
-import { UserAvailabilityDisplayNameDtoIn } from './dto/user-availability-display-name-dto-in.type';
-import { UserAvailabilityDtoOut } from './dto/user-availability-dto-out.type';
-import { UserAvailabilityEmailDtoIn } from './dto/user-availability-email-dto-in.type';
-import { UserDtoOut } from './dto/user-dto-out.type';
+import { UserAvailabilityDisplayNameDtoIn } from './dto/user-availability-display-name-in.dto';
+import { UserAvailabilityEmailInDto } from './dto/user-availability-email-in.dto';
+import { UserAvailabilityDtoOut } from './dto/user-availability-out.dto';
+import { UserDtoOut } from './dto/user-out.dto';
+import { UserSearchInDto } from './dto/user-search-in.dto';
 import { UserCurrent } from './user-current.decorator';
 import { UserService } from './user.service';
 
@@ -16,8 +17,8 @@ export class UsersController {
   }
 
   @Get()
-  public all(@Query() paginationIn: PaginationInDto) {
-    return this.userService.all(paginationIn);
+  public all(@Query() paginationIn: PaginationInDto, @Query() params: UserSearchInDto) {
+    return this.userService.all(paginationIn, params);
   }
 
   @Get('me')
@@ -27,7 +28,7 @@ export class UsersController {
 
   @Get('available-email')
   public async availableEmail(
-    @Query() query: UserAvailabilityEmailDtoIn,
+    @Query() query: UserAvailabilityEmailInDto,
   ): Promise<UserAvailabilityDtoOut> {
     return { available: !(await this.userService.byEmail(query.email)) };
   }
