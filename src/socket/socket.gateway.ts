@@ -41,8 +41,10 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       this.sockets.push(socket);
 
-      this.server.emit(
-        'users',
+      socket.broadcast.emit('users:join', socket.data.user);
+
+      socket.emit(
+        'users:all',
         this.sockets.map(
           (socket: HwbeSocket): UserDtoOut =>
             plainToInstance(UserDtoOut, socket.data.user, { excludeExtraneousValues: true }),
@@ -65,11 +67,8 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.sockets.splice(index, 1);
 
     this.server.emit(
-      'users',
-      this.sockets.map(
-        (socket: HwbeSocket): UserDtoOut =>
-          plainToInstance(UserDtoOut, socket.data.user, { excludeExtraneousValues: true }),
-      ),
+      'users:leave',
+      plainToInstance(UserDtoOut, socket.data.user, { excludeExtraneousValues: true }),
     );
   }
 }
