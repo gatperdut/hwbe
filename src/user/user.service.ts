@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { Prisma } from 'src/generated/client';
 import { QueryMode } from 'src/generated/internal/prismaNamespace';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationInDto } from 'src/utils/pagination-in.dto';
+import { UserCreateInDto } from './dto/user-create-in.dto';
 import { UserDtoOut } from './dto/user-out.dto';
 import { UserSearchInDto } from './dto/user-search-in.dto';
 
@@ -13,7 +13,7 @@ export class UserService {
     // Empty
   }
 
-  public async all(paginationIn: PaginationInDto, params: UserSearchInDto) {
+  public async search(paginationIn: PaginationInDto, params: UserSearchInDto) {
     const where = params.term
       ? {
           OR: [
@@ -45,7 +45,7 @@ export class UserService {
     };
   }
 
-  public create(data: Prisma.UserCreateInput) {
+  public create(data: UserCreateInDto) {
     return this.prismaService.user.create({ data: data });
   }
 

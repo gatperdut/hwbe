@@ -2,12 +2,13 @@ import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
+import { CharacterModule } from './character/character.module';
 import { SocketModule } from './socket/socket.module';
 import { UserModule } from './user/user.module';
 
 @Module({
   // TODO {isGlobal:true} for ConfigModule
-  imports: [ConfigModule.forRoot(), SocketModule, AuthModule, UserModule],
+  imports: [ConfigModule.forRoot(), SocketModule, AuthModule, UserModule, CharacterModule],
   controllers: [],
   providers: [],
 })

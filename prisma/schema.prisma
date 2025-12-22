@@ -8,10 +8,26 @@ datasource db {
   provider = "postgresql"
 }
 
+enum CharacterClass {
+  BARBARIAN
+  WIZARD
+  ELF
+  DWARF
+}
+
 model User {
   id Int @default(autoincrement()) @id
   displayName String @unique
   email String @unique
   password String
   admin Boolean @default(false)
+  characters Character[]
+}
+
+model Character {
+  id Int @default(autoincrement()) @id
+  name String
+  class CharacterClass @default(BARBARIAN)
+  userId Int
+  user User @relation(fields: [userId], references: [id])
 }

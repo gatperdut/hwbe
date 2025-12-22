@@ -40,6 +40,7 @@ export class AuthService {
       displayName: displayName,
       email: email,
       password: hashedPassword,
+      admin: false,
     });
 
     const token: string = this.generateToken(user.id);
