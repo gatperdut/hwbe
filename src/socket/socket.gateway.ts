@@ -41,14 +41,21 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       this.sockets.push(socket);
 
-      socket.broadcast.emit('users:join', socket.data.user);
+      socket.broadcast.emit('users:join', {
+        socketId: socket.id,
+        user: plainToInstance(UserDtoOut, socket.data.user, { excludeExtraneousValues: true }),
+      });
 
       socket.emit(
         'users:all',
-        this.sockets.map(
-          (socket: HwbeSocket): UserDtoOut =>
-            plainToInstance(UserDtoOut, socket.data.user, { excludeExtraneousValues: true }),
-        ),
+        this.sockets.map((someSocket: HwbeSocket) => {
+          return {
+            socketId: someSocket.id,
+            user: plainToInstance(UserDtoOut, someSocket.data.user, {
+              excludeExtraneousValues: true,
+            }),
+          };
+        }),
       );
     } catch {
       socket.disconnect(true);
@@ -66,9 +73,9 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     this.sockets.splice(index, 1);
 
-    this.server.emit(
-      'users:leave',
-      plainToInstance(UserDtoOut, socket.data.user, { excludeExtraneousValues: true }),
-    );
+    this.server.emit('users:leave', {
+      socketId: socket.id,
+      user: plainToInstance(UserDtoOut, socket.data.user, { excludeExtraneousValues: true }),
+    });
   }
 }
