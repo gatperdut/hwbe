@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { AdminGuard } from 'src/user/guard/admin.guard';
 import { PaginationDto } from 'src/utils/pagination.dto';
 import { CharacterService } from './character.service';
 import { CharacterAllDto } from './dto/character-all.dto';
@@ -11,6 +12,7 @@ export class CharacterController {
   }
 
   @Get()
+  @UseGuards(AdminGuard)
   public all(@Query() paginationIn: PaginationDto, @Query() params: CharacterAllDto) {
     return this.characterService.all(paginationIn, params);
   }

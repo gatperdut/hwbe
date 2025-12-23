@@ -35,7 +35,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
         throw new UnauthorizedException('Authorization token is missing');
       }
 
-      const payload: AuthTokenPayload = this.authService.verifyToken(token);
+      const payload: AuthTokenPayload = this.authService.verifyToken({ token: token });
 
       socket.data.user = await this.userService.byId({ id: payload.userId });
 

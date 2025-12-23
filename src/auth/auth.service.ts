@@ -3,6 +3,9 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { User } from 'src/generated/client';
 import { UserService } from 'src/user/user.service';
+import { AuthLoginDto } from './dto/auth-login.dto';
+import { AuthRegisterDto } from './dto/auth-register.dto';
+import { AuthVerifyTokenDto } from './dto/auth-verify-token.dto';
 import { AuthTokenPayload } from './types/auth-token-payload.type';
 import { AuthToken } from './types/auth-token.type';
 
@@ -33,12 +36,11 @@ export class AuthService {
     );
   }
 
-  public async register(displayName: string, email: string, password: string): Promise<AuthToken> {
-    const hashedPassword: string = await this.hashPassword(password);
+  public async register(params: AuthRegisterDto): Promise<AuthToken> {
+    const hashedPassword: string = await this.hashPassword(params.password);
 
     const user: User = await this.userService.create({
-      displayName: displayName,
-      email: email,
+      ...params,
       password: hashedPassword,
       admin: false,
     });
@@ -48,10 +50,10 @@ export class AuthService {
     return { token: token };
   }
 
-  public async login(email: string, password: string): Promise<AuthToken> {
-    const user = await this.userService.byEmail({ email: email });
+  public async login(params: AuthLoginDto): Promise<AuthToken> {
+    const user = await this.userService.byEmail({ email: params.email });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user || !(await bcrypt.compare(params.password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -60,9 +62,9 @@ export class AuthService {
     return { token: token };
   }
 
-  public verifyToken(token: string): AuthTokenPayload {
+  public verifyToken(params: AuthVerifyTokenDto): AuthTokenPayload {
     try {
-      return jwt.verify(token, this.jwtSecret) as AuthTokenPayload;
+      return jwt.verify(params.token, this.jwtSecret) as AuthTokenPayload;
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }

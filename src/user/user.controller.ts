@@ -2,13 +2,14 @@ import { Controller, Get, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/
 import { plainToInstance } from 'class-transformer';
 import { CharacterService } from 'src/character/character.service';
 import { User } from 'src/generated/client';
+import { UserCharactersDto } from 'src/user/dto/user-characters.dto';
 import { PaginationDto } from 'src/utils/pagination.dto';
 import { UserAllDto } from './dto/user-all.dto';
 import { UserAvailabilityDisplayNameDto } from './dto/user-availability-display-name.dto';
 import { UserAvailabilityEmailDto } from './dto/user-availability-email.dto';
 import { UserAvailabilityResponseDto } from './dto/user-availability-response.dto';
 import { UserDtoOut } from './dto/user-out.dto';
-import { UserCharactersGuard } from './guard/user-characters.guard';
+import { OwnGuard } from './guard/own.guard';
 import { UserCurrent } from './user-current.decorator';
 import { UserService } from './user.service';
 
@@ -22,8 +23,8 @@ export class UserController {
   }
 
   @Get()
-  public search(@Query() paginationIn: PaginationDto, @Query() params: UserAllDto) {
-    return this.userService.all(paginationIn, params);
+  public all(@Query() pagination: PaginationDto, @Query() params: UserAllDto) {
+    return this.userService.all(pagination, params);
   }
 
   @Get('me')
@@ -46,8 +47,12 @@ export class UserController {
   }
 
   @Get(':userId/characters')
-  @UseGuards(UserCharactersGuard)
-  public async characters(@Param('userId', ParseIntPipe) userId: number) {
-    return this.characterService.byUser({ userId: userId });
+  @UseGuards(OwnGuard)
+  public async characters(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Query() pagination: PaginationDto,
+    @Query() params: UserCharactersDto,
+  ) {
+    return this.characterService.byUser(userId, pagination, params);
   }
 }

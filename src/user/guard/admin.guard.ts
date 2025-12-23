@@ -3,22 +3,18 @@ import { Request } from 'express';
 import { User } from 'src/generated/client';
 
 @Injectable()
-export class UserCharactersGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   public canActivate(context: ExecutionContext): boolean {
     const request: Request = context.switchToHttp().getRequest();
 
     const user: User = request.user as User;
 
-    const userId = Number(request.params.id);
+    console.log(user.admin);
 
     if (user.admin) {
       return true;
     }
 
-    if (user.id !== userId) {
-      throw new ForbiddenException('Not allowed to access another user’s characters');
-    }
-
-    return true;
+    throw new ForbiddenException('Admin-only');
   }
 }

@@ -3,8 +3,8 @@ import { plainToInstance } from 'class-transformer';
 import { QueryMode } from 'src/generated/internal/prismaNamespace';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationDto } from 'src/utils/pagination.dto';
+import { UserCharactersDto } from '../user/dto/user-characters.dto';
 import { CharacterAllDto } from './dto/character-all.dto';
-import { CharacterByUserDto } from './dto/character-by-user.dto';
 import { CharacterCreateDto } from './dto/character-create.dto';
 import { CharacterOutDto } from './dto/character-out.dto';
 
@@ -56,17 +56,41 @@ export class CharacterService {
     };
   }
 
-  public async byUser(params: CharacterByUserDto) {
-    return plainToInstance(
-      CharacterOutDto,
-      await this.prismaService.character.findMany({
-        where: params,
-        orderBy: {
-          name: 'asc',
-        },
-      }),
-      { excludeExtraneousValues: true },
-    );
+  public async byUser(userId: number, pagination: PaginationDto, params: UserCharactersDto) {
+    const where = {
+      userId: userId,
+    };
+
+    const or = [];
+
+    if (params.term) {
+      or.push({ name: { contains: params.term, mode: QueryMode.insensitive } });
+    }
+
+    if (params.class) {
+      or.push({ class: params.class });
+    }
+
+    const total: number = await this.prismaService.character.count({ where: where });
+
+    return {
+      items: plainToInstance(
+        CharacterOutDto,
+        await this.prismaService.character.findMany({
+          where: where,
+          skip: pagination.page * pagination.pageSize,
+          take: pagination.pageSize,
+          orderBy: { name: 'asc' },
+        }),
+        { excludeExtraneousValues: true },
+      ),
+      meta: {
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        total: total,
+        pages: Math.ceil(total / pagination.pageSize),
+      },
+    };
   }
 
   public create(params: CharacterCreateDto) {

@@ -1,4 +1,4 @@
-import { IsBoolean, IsDefined, IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsDefined, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class UserCreateDto {
   @IsNotEmpty()
@@ -9,9 +9,8 @@ export class UserCreateDto {
   @IsEmail()
   email!: string;
 
-  @IsDefined()
+  @IsNotEmpty()
   @IsString()
-  @MinLength(6)
   password!: string;
 
   @IsDefined()

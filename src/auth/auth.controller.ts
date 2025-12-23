@@ -1,9 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthLoginDtoIn } from './dto/auth-login-dto-in.type';
-import { AuthRegisterDtoIn } from './dto/auth-register-dto-in.type';
+import { AuthLoginDto } from './dto/auth-login.dto';
+import { AuthRegisterDto } from './dto/auth-register.dto';
+import { AuthVerifyTokenDto } from './dto/auth-verify-token.dto';
 import { AuthTokenPayload } from './types/auth-token-payload.type';
-import { AuthToken } from './types/auth-token.type';
 
 @Controller('auth')
 export class AuthController {
@@ -11,19 +11,18 @@ export class AuthController {
     // Empty
   }
 
-  // TODO need to be async?
-  @Post('register')
-  public async register(@Body() body: AuthRegisterDtoIn) {
-    return this.authService.register(body.displayName, body.email, body.password);
+  @Post('login')
+  public async login(@Body() body: AuthLoginDto) {
+    return this.authService.login(body);
   }
 
-  @Post('login')
-  public async login(@Body() body: AuthLoginDtoIn) {
-    return this.authService.login(body.email, body.password);
+  @Post('register')
+  public async register(@Body() body: AuthRegisterDto) {
+    return this.authService.register(body);
   }
 
   @Post('verify-token')
-  public verifyToken(@Body() body: AuthToken): AuthTokenPayload {
-    return this.authService.verifyToken(body.token);
+  public verifyToken(@Body() body: AuthVerifyTokenDto): AuthTokenPayload {
+    return this.authService.verifyToken(body);
   }
 }
