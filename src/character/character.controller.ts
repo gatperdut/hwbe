@@ -1,6 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { PaginationDto } from 'src/utils/pagination.dto';
 import { CharacterService } from './character.service';
-import { CharacterCreateInDto } from './dto/character-create-in.dto';
+import { CharacterAllDto } from './dto/character-all.dto';
+import { CharacterCreateDto } from './dto/character-create.dto';
 
 @Controller('characters')
 export class CharacterController {
@@ -8,8 +10,13 @@ export class CharacterController {
     // Empty
   }
 
+  @Get()
+  public all(@Query() paginationIn: PaginationDto, @Query() params: CharacterAllDto) {
+    return this.characterService.all(paginationIn, params);
+  }
+
   @Post()
-  public create(@Body() body: CharacterCreateInDto) {
+  public create(@Body() body: CharacterCreateDto) {
     return this.characterService.create(body);
   }
 }

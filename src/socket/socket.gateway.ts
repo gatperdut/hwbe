@@ -37,7 +37,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       const payload: AuthTokenPayload = this.authService.verifyToken(token);
 
-      socket.data.user = await this.userService.byId(payload.userId);
+      socket.data.user = await this.userService.byId({ id: payload.userId });
 
       this.sockets.push(socket);
 

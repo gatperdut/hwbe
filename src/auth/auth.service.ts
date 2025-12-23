@@ -49,7 +49,7 @@ export class AuthService {
   }
 
   public async login(email: string, password: string): Promise<AuthToken> {
-    const user = await this.userService.byEmail(email);
+    const user = await this.userService.byEmail({ email: email });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');

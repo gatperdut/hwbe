@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class UserSearchInDto {
+export class UserAllDto {
   @IsOptional()
   @IsString()
   term!: string;

@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { QueryMode } from 'src/generated/internal/prismaNamespace';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PaginationInDto } from 'src/utils/pagination-in.dto';
-import { UserCreateInDto } from './dto/user-create-in.dto';
+import { PaginationDto } from 'src/utils/pagination.dto';
+import { UserAllDto } from './dto/user-all.dto';
+import { UserAvailabilityDisplayNameDto } from './dto/user-availability-display-name.dto';
+import { UserAvailabilityEmailDto } from './dto/user-availability-email.dto';
+import { UserByEmailDto } from './dto/user-by-email.dto';
+import { UserByIdDto } from './dto/user-by-id.dto';
+import { UserCreateDto } from './dto/user-create.dto';
 import { UserDtoOut } from './dto/user-out.dto';
-import { UserSearchInDto } from './dto/user-search-in.dto';
 
 @Injectable()
 export class UserService {
@@ -13,7 +17,7 @@ export class UserService {
     // Empty
   }
 
-  public async search(paginationIn: PaginationInDto, params: UserSearchInDto) {
+  public async all(pagination: PaginationDto, params: UserAllDto) {
     const where = params.term
       ? {
           OR: [
@@ -30,38 +34,43 @@ export class UserService {
         UserDtoOut,
         await this.prismaService.user.findMany({
           where: where,
-          skip: paginationIn.page * paginationIn.pageSize,
-          take: paginationIn.pageSize,
+          skip: pagination.page * pagination.pageSize,
+          take: pagination.pageSize,
           orderBy: { displayName: 'asc' },
         }),
         { excludeExtraneousValues: true },
       ),
       meta: {
-        page: paginationIn.page,
-        pageSize: paginationIn.pageSize,
+        page: pagination.page,
+        pageSize: pagination.pageSize,
         total: total,
-        pages: Math.ceil(total / paginationIn.pageSize),
+        pages: Math.ceil(total / pagination.pageSize),
       },
     };
   }
 
-  public create(data: UserCreateInDto) {
-    return this.prismaService.user.create({ data: data });
-  }
-
-  public byId(id: number) {
-    return this.prismaService.user.findUnique({ where: { id: id } });
-  }
-
-  public byEmail(email: string) {
+  public availabilityDisplayName(params: UserAvailabilityDisplayNameDto) {
     return this.prismaService.user.findUnique({
-      where: { email: email },
+      where: params,
+    });
+  }
+  public availabilityEmail(params: UserAvailabilityEmailDto) {
+    return this.prismaService.user.findUnique({
+      where: params,
     });
   }
 
-  public byDisplayName(displayName: string) {
+  public byEmail(params: UserByEmailDto) {
     return this.prismaService.user.findUnique({
-      where: { displayName: displayName },
+      where: params,
     });
+  }
+
+  public byId(params: UserByIdDto) {
+    return this.prismaService.user.findUnique({ where: params });
+  }
+
+  public create(params: UserCreateDto) {
+    return this.prismaService.user.create({ data: params });
   }
 }

@@ -1,7 +1,7 @@
 import { IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { CharacterClass } from 'src/generated/enums';
 
-export class CharacterCreateInDto {
+export class CharacterCreateDto {
   @IsNotEmpty()
   @IsString()
   name!: string;
