@@ -18,14 +18,17 @@ export class UserService {
   }
 
   public async all(pagination: PaginationDto, params: UserAllDto) {
-    const where = params.term
-      ? {
-          OR: [
-            { email: { contains: params.term, mode: QueryMode.insensitive } },
-            { displayName: { contains: params.term, mode: QueryMode.insensitive } },
-          ],
-        }
-      : {};
+    const or = [];
+
+    if (params.term) {
+      or.push({ email: { contains: params.term, mode: QueryMode.insensitive } });
+
+      or.push({ displayName: { contains: params.term, mode: QueryMode.insensitive } });
+    }
+
+    const where = {
+      OR: or.length ? or : undefined,
+    };
 
     const total: number = await this.prismaService.user.count({ where: where });
 

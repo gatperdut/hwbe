@@ -56,11 +56,11 @@ export class CharacterService {
     };
   }
 
-  public async byUser(userId: number, pagination: PaginationDto, params: UserCharactersDto) {
-    const where = {
-      userId: userId,
-    };
+  public create(params: CharacterCreateDto) {
+    return this.prismaService.character.create({ data: params });
+  }
 
+  public async byUser(userId: number, pagination: PaginationDto, params: UserCharactersDto) {
     const or = [];
 
     if (params.term) {
@@ -70,6 +70,11 @@ export class CharacterService {
     if (params.class) {
       or.push({ class: params.class });
     }
+
+    const where = {
+      userId: userId,
+      OR: or.length ? or : undefined,
+    };
 
     const total: number = await this.prismaService.character.count({ where: where });
 
@@ -91,9 +96,5 @@ export class CharacterService {
         pages: Math.ceil(total / pagination.pageSize),
       },
     };
-  }
-
-  public create(params: CharacterCreateDto) {
-    return this.prismaService.character.create({ data: params });
   }
 }
