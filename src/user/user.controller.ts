@@ -1,5 +1,6 @@
 import { Controller, Get, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { CampaignService } from 'src/campaign/campaign.service';
 import { CharacterService } from 'src/character/character.service';
 import { User } from 'src/generated/client';
 import { UserCharactersDto } from 'src/user/dto/user-characters.dto';
@@ -9,6 +10,7 @@ import { UserAllDto } from './dto/user-all.dto';
 import { UserAvailabilityDisplayNameDto } from './dto/user-availability-display-name.dto';
 import { UserAvailabilityEmailDto } from './dto/user-availability-email.dto';
 import { UserAvailabilityResponseDto } from './dto/user-availability-response.dto';
+import { UserCampaignsDto } from './dto/user-campaigns.dto';
 import { UserDtoOut } from './dto/user-out.dto';
 import { UserCurrent } from './user-current.decorator';
 import { UserService } from './user.service';
@@ -18,6 +20,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly characterService: CharacterService,
+    private readonly campaignService: CampaignService,
   ) {
     // Empty
   }
@@ -54,5 +57,14 @@ export class UserController {
     @Query() params: UserCharactersDto,
   ) {
     return this.characterService.byUser(userId, pagination, params);
+  }
+
+  @Get(':userId/campaigns')
+  public async campaigns(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Query() pagination: PaginationDto,
+    @Query() params: UserCampaignsDto,
+  ) {
+    return this.campaignService.byUser(userId, pagination, params);
   }
 }
