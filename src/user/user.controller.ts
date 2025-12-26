@@ -4,12 +4,12 @@ import { CharacterService } from 'src/character/character.service';
 import { User } from 'src/generated/client';
 import { UserCharactersDto } from 'src/user/dto/user-characters.dto';
 import { PaginationDto } from 'src/utils/pagination.dto';
+import { OwnGuard } from '../guards/own.guard';
 import { UserAllDto } from './dto/user-all.dto';
 import { UserAvailabilityDisplayNameDto } from './dto/user-availability-display-name.dto';
 import { UserAvailabilityEmailDto } from './dto/user-availability-email.dto';
 import { UserAvailabilityResponseDto } from './dto/user-availability-response.dto';
 import { UserDtoOut } from './dto/user-out.dto';
-import { OwnGuard } from './guard/own.guard';
 import { UserCurrent } from './user-current.decorator';
 import { UserService } from './user.service';
 

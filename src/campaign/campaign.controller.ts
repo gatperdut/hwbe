@@ -1,0 +1,24 @@
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { AdminGuard } from 'src/guards/admin.guard';
+import { PaginationDto } from 'src/utils/pagination.dto';
+import { CampaignService } from './campaign.service';
+import { CampaignAllDto } from './dto/campaign-all.dto';
+import { CampaignCreateDto } from './dto/campaign-create.dto';
+
+@Controller('campaigns')
+export class CampaignController {
+  constructor(private readonly campaignService: CampaignService) {
+    // Empty
+  }
+
+  @Get()
+  @UseGuards(AdminGuard)
+  public all(@Query() paginationIn: PaginationDto, @Query() params: CampaignAllDto) {
+    return this.campaignService.all(paginationIn, params);
+  }
+
+  @Post()
+  public create(@Body() body: CampaignCreateDto) {
+    return this.campaignService.create(body);
+  }
+}

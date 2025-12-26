@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { AdminGuard } from 'src/user/guard/admin.guard';
+import { AdminGuard } from 'src/guards/admin.guard';
 import { PaginationDto } from 'src/utils/pagination.dto';
 import { CharacterService } from './character.service';
 import { CharacterAllDto } from './dto/character-all.dto';

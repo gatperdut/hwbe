@@ -9,8 +9,6 @@ export class AdminGuard implements CanActivate {
 
     const user: User = request.user as User;
 
-    console.log(user.admin);
-
     if (user.admin) {
       return true;
     }

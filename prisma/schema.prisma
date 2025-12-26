@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated"
+  output = "../src/generated"
   moduleFormat = "cjs"
 }
 
@@ -16,18 +16,40 @@ enum CharacterClass {
 }
 
 model User {
-  id Int @default(autoincrement()) @id
+  id Int @id @default(autoincrement())
   displayName String @unique
   email String @unique
   password String
   admin Boolean @default(false)
   characters Character[]
+  masteredCampaigns Campaign[] @relation("CampaignMaster")
+  playedCampaigns CampaignPlayer[]
 }
 
 model Character {
-  id Int @default(autoincrement()) @id
+  id Int @id @default(autoincrement())
   name String
   class CharacterClass @default(BARBARIAN)
   userId Int
   user User @relation(fields: [userId], references: [id])
+  playedCampaigns CampaignPlayer[]
+}
+
+model Campaign {
+  id Int @id @default(autoincrement())
+  name String
+  masterId Int
+  master User @relation("CampaignMaster", fields: [masterId], references: [id])
+  players CampaignPlayer[]
+}
+
+model CampaignPlayer {
+  campaignId Int
+  userId Int
+  characterId Int
+  campaign Campaign @relation(fields: [campaignId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  character Character @relation(fields: [characterId], references: [id])
+  @@id([campaignId, userId])
+  @@unique([campaignId, characterId])
 }
