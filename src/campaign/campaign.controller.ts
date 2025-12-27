@@ -4,6 +4,7 @@ import { PaginationDto } from 'src/utils/pagination.dto';
 import { CampaignService } from './campaign.service';
 import { CampaignAllDto } from './dto/campaign-all.dto';
 import { CampaignCreateDto } from './dto/campaign-create.dto';
+import { CampaignIncludeDto } from './dto/campaign-include.dto';
 
 @Controller('campaigns')
 export class CampaignController {
@@ -13,8 +14,12 @@ export class CampaignController {
 
   @Get()
   @UseGuards(AdminGuard)
-  public all(@Query() paginationIn: PaginationDto, @Query() params: CampaignAllDto) {
-    return this.campaignService.all(paginationIn, params);
+  public all(
+    @Query() paginationIn: PaginationDto,
+    @Query() include: CampaignIncludeDto,
+    @Query() params: CampaignAllDto,
+  ) {
+    return this.campaignService.all(paginationIn, include, params);
   }
 
   @Post()

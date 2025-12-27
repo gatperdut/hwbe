@@ -3,7 +3,7 @@ import { IsInt, IsOptional, Max, Min } from 'class-validator';
 
 export class PaginationDto {
   @IsOptional()
-  @Type(() => Number)
+  @Type((): NumberConstructor => Number)
   @IsInt()
   @Min(0)
   page = 0;

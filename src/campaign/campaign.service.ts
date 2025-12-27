@@ -6,6 +6,7 @@ import { UserCampaignsDto } from 'src/user/dto/user-campaigns.dto';
 import { PaginationDto } from 'src/utils/pagination.dto';
 import { CampaignAllDto } from './dto/campaign-all.dto';
 import { CampaignCreateDto } from './dto/campaign-create.dto';
+import { CampaignIncludeDto } from './dto/campaign-include.dto';
 import { CampaignOutDto } from './dto/campaign-out.dto';
 
 @Injectable()
@@ -14,7 +15,11 @@ export class CampaignService {
     // Empty
   }
 
-  public async all(paginationIn: PaginationDto, params: CampaignAllDto) {
+  public async all(
+    paginationIn: PaginationDto,
+    include: CampaignIncludeDto,
+    params: CampaignAllDto,
+  ) {
     const or = [];
 
     if (params.term) {
@@ -40,6 +45,10 @@ export class CampaignService {
           skip: paginationIn.page * paginationIn.pageSize,
           take: paginationIn.pageSize,
           orderBy: { name: 'asc' },
+          include: {
+            master: include.includeMaster,
+            players: include.includePlayers ? { include: { user: true, character: true } } : false,
+          },
         }),
         { excludeExtraneousValues: true },
       ),

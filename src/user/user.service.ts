@@ -9,7 +9,7 @@ import { UserAvailabilityEmailDto } from './dto/user-availability-email.dto';
 import { UserByEmailDto } from './dto/user-by-email.dto';
 import { UserByIdDto } from './dto/user-by-id.dto';
 import { UserCreateDto } from './dto/user-create.dto';
-import { UserDtoOut } from './dto/user-out.dto';
+import { UserOutDto } from './dto/user-out.dto';
 
 @Injectable()
 export class UserService {
@@ -34,7 +34,7 @@ export class UserService {
 
     return {
       items: plainToInstance(
-        UserDtoOut,
+        UserOutDto,
         await this.prismaService.user.findMany({
           where: where,
           skip: pagination.page * pagination.pageSize,

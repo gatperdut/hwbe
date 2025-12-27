@@ -11,7 +11,7 @@ import { UserAvailabilityDisplayNameDto } from './dto/user-availability-display-
 import { UserAvailabilityEmailDto } from './dto/user-availability-email.dto';
 import { UserAvailabilityResponseDto } from './dto/user-availability-response.dto';
 import { UserCampaignsDto } from './dto/user-campaigns.dto';
-import { UserDtoOut } from './dto/user-out.dto';
+import { UserOutDto } from './dto/user-out.dto';
 import { UserCurrent } from './user-current.decorator';
 import { UserService } from './user.service';
 
@@ -31,8 +31,8 @@ export class UserController {
   }
 
   @Get('me')
-  public me(@UserCurrent() user: User): UserDtoOut {
-    return plainToInstance(UserDtoOut, user, { excludeExtraneousValues: true });
+  public me(@UserCurrent() user: User): UserOutDto {
+    return plainToInstance(UserOutDto, user, { excludeExtraneousValues: true });
   }
 
   @Get('availability-email')

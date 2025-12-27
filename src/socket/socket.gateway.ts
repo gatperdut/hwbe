@@ -9,7 +9,7 @@ import { plainToInstance } from 'class-transformer';
 import { Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthTokenPayload } from 'src/auth/types/auth-token-payload.type';
-import { UserDtoOut } from 'src/user/dto/user-out.dto';
+import { UserOutDto } from 'src/user/dto/user-out.dto';
 import { UserService } from 'src/user/user.service';
 import { HwbeSocket } from './types/hwbe-socket.type';
 
@@ -43,7 +43,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       socket.broadcast.emit('users:join', {
         socketId: socket.id,
-        user: plainToInstance(UserDtoOut, socket.data.user, { excludeExtraneousValues: true }),
+        user: plainToInstance(UserOutDto, socket.data.user, { excludeExtraneousValues: true }),
       });
 
       socket.emit(
@@ -51,7 +51,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.sockets.map((someSocket: HwbeSocket) => {
           return {
             socketId: someSocket.id,
-            user: plainToInstance(UserDtoOut, someSocket.data.user, {
+            user: plainToInstance(UserOutDto, someSocket.data.user, {
               excludeExtraneousValues: true,
             }),
           };
@@ -75,7 +75,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     this.server.emit('users:leave', {
       socketId: socket.id,
-      user: plainToInstance(UserDtoOut, socket.data.user, { excludeExtraneousValues: true }),
+      user: plainToInstance(UserOutDto, socket.data.user, { excludeExtraneousValues: true }),
     });
   }
 }
