@@ -1,6 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { CampaignService } from 'src/campaign/campaign.service';
+import { CampaignIncludeDto } from 'src/campaign/dto/campaign-include.dto';
 import { CharacterService } from 'src/character/character.service';
 import { User } from 'src/generated/client';
 import { UserCharactersDto } from 'src/user/dto/user-characters.dto';
@@ -63,8 +64,9 @@ export class UserController {
   public async campaigns(
     @Param('userId', ParseIntPipe) userId: number,
     @Query() pagination: PaginationDto,
+    @Query() include: CampaignIncludeDto,
     @Query() params: UserCampaignsDto,
   ) {
-    return this.campaignService.byUser(userId, pagination, params);
+    return this.campaignService.byUser(userId, pagination, include, params);
   }
 }

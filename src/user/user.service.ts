@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { Prisma } from 'src/generated/client';
 import { QueryMode } from 'src/generated/internal/prismaNamespace';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationDto } from 'src/utils/pagination.dto';
@@ -18,17 +19,24 @@ export class UserService {
   }
 
   public async all(pagination: PaginationDto, params: UserAllDto) {
-    const or = [];
-
-    if (params.term) {
-      or.push({ email: { contains: params.term, mode: QueryMode.insensitive } });
-
-      or.push({ displayName: { contains: params.term, mode: QueryMode.insensitive } });
-    }
-
-    const where = {
-      OR: or.length ? or : undefined,
-    };
+    const where: Prisma.UserWhereInput = params.term
+      ? {
+          OR: [
+            {
+              email: {
+                contains: params.term,
+                mode: QueryMode.insensitive,
+              },
+            },
+            {
+              displayName: {
+                contains: params.term,
+                mode: QueryMode.insensitive,
+              },
+            },
+          ],
+        }
+      : {};
 
     const total: number = await this.prismaService.user.count({ where: where });
 

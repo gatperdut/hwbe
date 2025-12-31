@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { Prisma } from 'src/generated/client';
 import { QueryMode } from 'src/generated/internal/prismaNamespace';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserCampaignsDto } from 'src/user/dto/user-campaigns.dto';
@@ -20,19 +21,35 @@ export class CampaignService {
     include: CampaignIncludeDto,
     params: CampaignAllDto,
   ) {
-    const or = [];
-
-    if (params.term) {
-      or.push({ name: { contains: params.term, mode: QueryMode.insensitive } });
-    }
-
-    if (params.masterId) {
-      or.push({ masterId: params.masterId });
-    }
-
-    // TODO check if it works when where=undefined
-    const where = {
-      OR: or.length ? or : undefined,
+    const where: Prisma.CampaignWhereInput = {
+      AND: [
+        ...(params.term
+          ? [
+              {
+                name: {
+                  contains: params.term,
+                  mode: QueryMode.insensitive,
+                },
+              },
+            ]
+          : []),
+        ...(params.participantId
+          ? [
+              {
+                OR: [
+                  { masterId: params.participantId },
+                  {
+                    players: {
+                      some: {
+                        userId: params.participantId,
+                      },
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
+      ],
     };
 
     const total: number = await this.prismaService.campaign.count({ where: where });
@@ -65,19 +82,44 @@ export class CampaignService {
     return this.prismaService.campaign.create({ data: params });
   }
 
-  public async byUser(userId: number, pagination: PaginationDto, params: UserCampaignsDto) {
-    const or = [];
-
-    or.push({ masterId: userId });
-
-    or.push({ players: { some: { userId: userId } } });
-
-    if (params.term) {
-      or.push({ name: { contains: params.term, mode: QueryMode.insensitive } });
-    }
-
-    const where = {
-      OR: or.length ? or : undefined,
+  public async byUser(
+    userId: number,
+    pagination: PaginationDto,
+    include: CampaignIncludeDto,
+    params: UserCampaignsDto,
+  ) {
+    const where: Prisma.CampaignWhereInput = {
+      AND: [
+        {
+          OR: [{ masterId: userId }, { players: { some: { userId: userId } } }],
+        },
+        ...(params.term
+          ? [
+              {
+                name: {
+                  contains: params.term,
+                  mode: QueryMode.insensitive,
+                },
+              },
+            ]
+          : []),
+        ...(params.participantId
+          ? [
+              {
+                OR: [
+                  { masterId: params.participantId },
+                  {
+                    players: {
+                      some: {
+                        userId: params.participantId,
+                      },
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
+      ],
     };
 
     const total: number = await this.prismaService.campaign.count({ where: where });
@@ -90,6 +132,10 @@ export class CampaignService {
           skip: pagination.page * pagination.pageSize,
           take: pagination.pageSize,
           orderBy: { name: 'asc' },
+          include: {
+            master: include.includeMaster,
+            players: include.includePlayers ? { include: { user: true, character: true } } : false,
+          },
         }),
         { excludeExtraneousValues: true },
       ),
