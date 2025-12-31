@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { PaginationDto } from 'src/dto/pagination.dto';
 import { Prisma } from 'src/generated/client';
 import { QueryMode } from 'src/generated/internal/prismaNamespace';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserCampaignsDto } from 'src/user/dto/user-campaigns.dto';
-import { PaginationDto } from 'src/utils/pagination.dto';
 import { CampaignAllDto } from './dto/campaign-all.dto';
 import { CampaignCreateDto } from './dto/campaign-create.dto';
 import { CampaignIncludeDto } from './dto/campaign-include.dto';

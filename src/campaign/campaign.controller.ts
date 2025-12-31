@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { PaginationDto } from 'src/dto/pagination.dto';
 import { AdminGuard } from 'src/guards/admin.guard';
-import { PaginationDto } from 'src/utils/pagination.dto';
 import { CampaignService } from './campaign.service';
 import { CampaignAllDto } from './dto/campaign-all.dto';
 import { CampaignCreateDto } from './dto/campaign-create.dto';

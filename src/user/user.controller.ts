@@ -3,9 +3,10 @@ import { plainToInstance } from 'class-transformer';
 import { CampaignService } from 'src/campaign/campaign.service';
 import { CampaignIncludeDto } from 'src/campaign/dto/campaign-include.dto';
 import { CharacterService } from 'src/character/character.service';
+import { PaginationDto } from 'src/dto/pagination.dto';
 import { User } from 'src/generated/client';
 import { UserCharactersDto } from 'src/user/dto/user-characters.dto';
-import { PaginationDto } from 'src/utils/pagination.dto';
+import { WithoutIdsDto } from '../dto/without.dto';
 import { OwnGuard } from '../guards/own.guard';
 import { UserAllDto } from './dto/user-all.dto';
 import { UserAvailabilityDisplayNameDto } from './dto/user-availability-display-name.dto';
@@ -27,8 +28,12 @@ export class UserController {
   }
 
   @Get()
-  public all(@Query() pagination: PaginationDto, @Query() params: UserAllDto) {
-    return this.userService.all(pagination, params);
+  public all(
+    @Query() pagination: PaginationDto,
+    @Query() withoutIds: WithoutIdsDto,
+    @Query() params: UserAllDto,
+  ) {
+    return this.userService.all(pagination, withoutIds, params);
   }
 
   @Get('me')

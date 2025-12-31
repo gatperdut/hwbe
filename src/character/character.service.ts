@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { PaginationDto } from 'src/dto/pagination.dto';
 import { QueryMode } from 'src/generated/internal/prismaNamespace';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PaginationDto } from 'src/utils/pagination.dto';
 import { UserCharactersDto } from '../user/dto/user-characters.dto';
 import { CharacterAllDto } from './dto/character-all.dto';
 import { CharacterCreateDto } from './dto/character-create.dto';
