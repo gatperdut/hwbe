@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserCampaignsDto } from 'src/user/dto/user-campaigns.dto';
 import { CampaignAllDto } from './dto/campaign-all.dto';
 import { CampaignCreateDto } from './dto/campaign-create.dto';
+import { CampaignGetDto } from './dto/campaign-get.dto';
 import { CampaignIncludeDto } from './dto/campaign-include.dto';
 import { CampaignOutDto } from './dto/campaign-out.dto';
 
@@ -76,6 +77,20 @@ export class CampaignService {
         pages: Math.ceil(total / paginationIn.pageSize),
       },
     };
+  }
+
+  public get(include: CampaignIncludeDto, params: CampaignGetDto) {
+    return plainToInstance(
+      CampaignOutDto,
+      this.prismaService.campaign.findUnique({
+        where: { id: params.campaignId },
+        include: {
+          master: include.includeMaster,
+          players: include.includePlayers ? { include: { user: true, character: true } } : false,
+        },
+      }),
+      { excludeExtraneousValues: true },
+    );
   }
 
   public create(params: CampaignCreateDto) {

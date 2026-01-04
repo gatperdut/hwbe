@@ -11,12 +11,21 @@ import { UserAvailabilityEmailDto } from './dto/user-availability-email.dto';
 import { UserByEmailDto } from './dto/user-by-email.dto';
 import { UserByIdDto } from './dto/user-by-id.dto';
 import { UserCreateDto } from './dto/user-create.dto';
+import { UserGetDto } from './dto/user-get.dto';
 import { UserOutDto } from './dto/user-out.dto';
 
 @Injectable()
 export class UserService {
   constructor(private prismaService: PrismaService) {
     // Empty
+  }
+
+  public async get(params: UserGetDto) {
+    return plainToInstance(
+      UserOutDto,
+      await this.prismaService.user.findUnique({ where: { id: params.userId } }),
+      { excludeExtraneousValues: true },
+    );
   }
 
   public async all(pagination: PaginationDto, withoutIds: WithoutIdsDto, params: UserAllDto) {

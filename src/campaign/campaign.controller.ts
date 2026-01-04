@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { PaginationDto } from 'src/dto/pagination.dto';
 import { AdminGuard } from 'src/guards/admin.guard';
 import { CampaignService } from './campaign.service';
 import { CampaignAllDto } from './dto/campaign-all.dto';
 import { CampaignCreateDto } from './dto/campaign-create.dto';
+import { CampaignGetDto } from './dto/campaign-get.dto';
 import { CampaignIncludeDto } from './dto/campaign-include.dto';
 
 @Controller('campaigns')
@@ -20,6 +21,11 @@ export class CampaignController {
     @Query() params: CampaignAllDto,
   ) {
     return this.campaignService.all(paginationIn, include, params);
+  }
+
+  @Get(':campaignId')
+  public get(@Query() include: CampaignIncludeDto, @Param() params: CampaignGetDto) {
+    return this.campaignService.get(include, params);
   }
 
   @Post()

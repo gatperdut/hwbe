@@ -13,6 +13,7 @@ import { UserAvailabilityDisplayNameDto } from './dto/user-availability-display-
 import { UserAvailabilityEmailDto } from './dto/user-availability-email.dto';
 import { UserAvailabilityResponseDto } from './dto/user-availability-response.dto';
 import { UserCampaignsDto } from './dto/user-campaigns.dto';
+import { UserGetDto } from './dto/user-get.dto';
 import { UserOutDto } from './dto/user-out.dto';
 import { UserCurrent } from './user-current.decorator';
 import { UserService } from './user.service';
@@ -53,6 +54,11 @@ export class UserController {
     @Query() params: UserAvailabilityDisplayNameDto,
   ): Promise<UserAvailabilityResponseDto> {
     return { available: !(await this.userService.availabilityDisplayName(params)) };
+  }
+
+  @Get(':userId')
+  public get(@Param() params: UserGetDto) {
+    return this.userService.get(params);
   }
 
   @Get(':userId/characters')
